@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    body {
+        background-image: url('/homeBG.jpg');
+        background-repeat: repeat;
+        background-size: 500px auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        background-blend-mode: lighten;
+    }
+
+    #titleHeader {
+        text-shadow: 0 1px 0 black;
+        font-weight: 900;
+    }
+</style>
+
+<br />
+<h1 id="titleHeader">Admin Portal</h1>
+<br />
+
+
+<div class="card shadow">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="blog-tab" data-toggle="tab" href="#blog" role="tab" aria-controls="blog" aria-selected="true">Movies</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="false">Reviews</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="false">Comments</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent" style="border-left:1px solid #DDDDDD;border-right:1px solid #DDDDDD;border-bottom:1px solid #DDDDDD;">
+        <div class="tab-pane fade show active" id="blog" role="tabpanel" aria-labelledby="blog-tab">
+            <br />
+            <h3 class="pl-3">All Movies</h3>
+            <partial name="/Views/Shared/PartialViews/BlogsTable.cshtml" model="ViewBag.Blogs" />
+        </div>
+        <div class="tab-pane fade" id="post" role="tabpanel" aria-labelledby="post-tab">
+            <br />
+            <h3 class="pl-3">All Reviews</h3>
+            <partial name="/Views/Shared/PartialViews/PostsTable.cshtml" model="ViewBag.Posts" />
+        </div>
+        <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
+            <br />
+            <h3 class="pl-3">All Comments</h3>
+            <partial name="/Views/Shared/PartialViews/CommentsTable.cshtml" model="ViewBag.Comments" />
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+

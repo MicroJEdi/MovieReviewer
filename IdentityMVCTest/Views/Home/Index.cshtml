@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Blog>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    body {
+        background-image: url('/homeBG.jpg');
+        background-repeat: repeat;
+        background-size: 500px auto;
+        background-color: rgba(255, 255, 255, 0.9);
+        background-blend-mode: lighten;
+    }
+
+    #titleHeader {
+        text-shadow: 0 1px 0 black;
+        font-weight: 900;
+    }
+</style>
+
+<br />
+
+
+<div class="d-flex justify-content-between">
+    <div><h1 id="titleHeader" class="pr-3">Popular Choices</h1></div>
+    <form asp-controller="Blog" asp-action="Search" method="get" class="align-self-center flex-grow-1">
+        <div class="input-group flex-grow-1">
+            <div class="input-group-prepend">
+                <button class="input-group-text" id="addon-wrapping"><img src="https://img.icons8.com/cute-clipart/64/000000/search-more.png" style="height:23px;"></button>
+            </div>
+            <input name="searchString" type="text" class="flex-grow-1 form-control" placeholder="Search Movies" aria-label="Search" aria-describedby="addon-wrapping" value="@Context.Request.Query.Where(q => q.Key == "searchString").Select(q => q.Value).FirstOrDefault()">
+        </div>
+    </form>
+</div>
+<br />
+
+<div class="row">
+    @foreach (Blog b in Model)
+    {
+        <a asp-controller="Blog" asp-action="Details" asp-route-id="@b.BlogId" class="col-3 pb-4">
+            <div class="card shadow" style="border:none;">
+                <img src="@b.LogoURL" class="card-img-top" />
+            </div>
+        </a>
+    }
+</div>
+

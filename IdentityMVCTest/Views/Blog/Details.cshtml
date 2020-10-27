@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Details";
+    var accordionId = 1;
+    var UserList = @UserManager.Users.ToList();
+}
+
+<style>
+#titleHeader {
+    text-shadow: 0 1px 0 black;
+    font-weight:900;
+}
+
+body {
+    background-image: url('@ViewBag.Blog.LogoURL');
+    background-repeat: repeat;
+    background-size: 400px auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    background-blend-mode: lighten;
+}
+
+.checked {
+  color: orange;
+}
+</style>
+
+<br />
+<div class="d-flex flex-row justify-content-between">
+    <h1 id="titleHeader">@ViewBag.Blog.Name</h1>
+    <div class="shadow align-self-center pl-3 pr-3">
+        <a asp-controller="Post" asp-action="Create" asp-route-blogid="@ViewBag.Blog.BlogId" class="shadow btn-lg btn-primary ">+ Add Review</a>
+    </div>
+    <form asp-controller="Post" asp-action="Search" method="get" class="flex-grow-1">
+        <div class="input-group flex-nowrap pt-2 flex-grow-1">
+            <div class="input-group-prepend" style="height:38px;">
+                <span class="input-group-text shadow" id="addon-wrapping"><img src="https://img.icons8.com/cute-clipart/64/000000/search-more.png" style="height:20px;"></span>
+            </div>
+            <input name="blogId" value="@ViewBag.Blog.BlogId" type="hidden" />
+            <input name="searchString" type="text" class="shadow flex-grow-1 form-control" placeholder="Search Reviews" aria-label="Search" aria-describedby="addon-wrapping" value="@Context.Request.Query.Where(q => q.Key == "searchString").Select(q => q.Value).FirstOrDefault()">
+        </div>
+    </form>
+</div>
+<br />
+
+@functions {
+string getHeading(string prefix, int value)
+{
+    return prefix + value;
+}
+}
+
+<div class="accordion shadow" id="postAccordion">
+    @foreach (Post p in ViewBag.Posts)
+    {
+        <div class="card">
+            <div class="card-header" id="@getHeading("heading",accordionId)">
+                <h2 class="mb-0">
+                    <div class="d-flex d-inline">
+                        <button style="border-radius:1%;" class=" shadow btn text-left d-flex flex-row flex-fill @((accordionId==1)?" ":"collapsed")" type="button" data-toggle="collapse" data-target="#@getHeading("collapse",accordionId)" aria-expanded="false" aria-controls="@getHeading("collapse",accordionId)">
+                            <img src="https://img.icons8.com/pastel-glyph/64/000000/gender-neutral-user.png" class=" img-thumbnail shadow" style="border-radius:50%;width:64px;height:64px;">
+                            <div class=" pl-3">
+                                <strong style="font-weight:900;font-size:larger;">@p.Title</strong>
+                                <small class="pl-1 justify-content-end m-auto"> Posted by @UserList.Where(u => u.Id == p.UserId).Select(u => u.UserName).First() created on @p.Created</small>
+                                <br />
+                                <p class="pt-1" style="font-size:17dpi;">@((p.ContentBody.Length < 100) ? p.ContentBody : p.ContentBody.Substring(0, 100)+" ...")</p>
+                            </div>
+                        </button>
+                        <div class="d-flex flex-column  justify-content-center pl-3">
+                            <div class="align-self-center pb-2" style="font-size:1rem;">
+                                <span class="fa fa-star @((accordionId%5)>=0?"checked":"")"></span>
+                                <span class="fa fa-star @((accordionId%5)>=1?"checked":"")"></span>
+                                <span class="fa fa-star @((accordionId%5)>=2?"checked":"")"></span>
+                                <span class="fa fa-star @((accordionId%5)>=3?"checked":"")"></span>
+                                <span class="fa fa-star @((accordionId%5)>=4?"checked":"")"></span>
+                            </div>
+                            <button type="button" class="d-flex btn btn-primary shadow" data-toggle="collapse" data-target="#@getHeading("collapse",accordionId)" aria-expanded="false" aria-controls="@getHeading("collapse",accordionId)">
+                                <span class="badge badge-light">@p.Comments.Count   </span> Commments
+                                <span class="sr-only">unread messages</span>
+                            </button>
+                        </div>
+                    </div>
+                </h2>
+            </div>
+            <div id="@getHeading("collapse",accordionId)" class="collapse @((accordionId==1)?"show":"")" aria-labelledby="@getHeading("heading",accordionId)" data-parent="#postAccordion">
+                <div class="card-body">
+                    <div class="d-flex justify-content-start">
+                        <div class="d-flex flex-row flex-fill card col-2" style="border:none;">
+                            <img src="@ViewBag.Blog.LogoURL" class="shadow card-img-top" />
+                        </div>
+                        <div class="d-flex justify-content-between pl-5 col-10">
+                            <div class="d-flex flex-column">
+                                <h2 class="">@p.Title</h2>
+                                <small class="pb-3"> Posted by @UserList.Where(u => u.Id == p.UserId).Select(u => u.UserName).First() created on @p.Created</small>
+                                <p>
+                                    @p.ContentBody
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                        <h3 class="pt-5 pb-2">Comments</h3>
+                        <div class="pt-5 h-100">
+                            <a asp-controller="Comment" asp-action="Create" asp-route-postid="@p.PostId" class="btn btn-primary shadow">+ Add Comment</a>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var c in p.Comments)
+                        {
+                            <li class="list-group-item d-flex pb-4">
+                                <img src="https://img.icons8.com/pastel-glyph/64/000000/gender-neutral-user.png" class="img-thumbnail" style="border-radius:50%;width:64px;height:64px;">
+                                <div class="pl-4">
+                                    <p>@c.ContentBody</p>
+                                    <small> @UserManager.Users.Where(u => u.Id == c.UserId).Select(u => u.UserName).First() commented on @c.Created</small>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        accordionId++;
+    }
+</div>
+<br />
+<br />
+

@@ -1,0 +1,5 @@
+/.vs
+/IdentityMVCTest/bin
+/IdentityMVCTest/obj
+/IdentityMVCTest/Migrations
+/IdentityMVCTest/wwwroot/lib
